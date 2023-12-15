@@ -34,17 +34,17 @@ pipeline{
         stage ('Publish to Nexus'){
             steps {
                 nexusArtifactUploader artifacts:
-                [[artifactId: 'VinayDevOpsLab', 
+                [[artifactId: "${ArtifactId}", 
                 classifier: '', 
                 file: 'target/VinayDevOpsLab-0.0.3-SNAPSHOT.war', 
                 type: 'war']], 
                 credentialsId: '0a0bc6c8-f184-4d8e-9775-bcda7b4130b6', 
-                groupId: 'com.vinaysdevopslab', 
+                groupId: "${GroupId}", 
                 nexusUrl: '172.20.10.52:8081', 
                 nexusVersion: 'nexus3', 
                 protocol: 'http', 
                 repository: 'VinaysDevOpsLab-SNAPSHOT', 
-                version: '0.0.3-SNAPSHOT'
+                version: "${Version}"
 
             }
         }
