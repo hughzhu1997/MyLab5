@@ -4,14 +4,12 @@ pipeline{
     tools {
         maven 'maven'
     }
-
-    environment {
-        ArtifactId = readMavenPom().getArtifactId()
-        Version = readMavenPom().getVersion()
-        GroupId = readMavenPom().getGroupId()
-        Name = readMavenPom().getName()
+    environment{
+       ArtifactId = readMavenPom().getArtifactId()
+       Version = readMavenPom().getVersion()
+       Name = readMavenPom().getName()
+       GroupId = readMavenPom().getGroupId()
     }
-
     stages {
         // Specify various stage with in stages
 
@@ -22,7 +20,7 @@ pipeline{
             }
         }
 
-        // Stage 2 : Testing
+        // Stage2 : Testing
         stage ('Test'){
             steps {
                 echo ' testing......'
@@ -30,17 +28,17 @@ pipeline{
             }
         }
 
-        // Stage 3 : Publish the artifacts to Nexus
+        // Stage3 : Publish the artifacts to Nexus
         stage ('Publish to Nexus'){
             steps {
                 script {
 
-                def NexusRepo = Version.endWith("SNAPSHOT") ? "VinaysDevOpsLab-SNAPSHOT" : "VinaysDevOpsLab-RELEASE"
+                def NexusRepo = Version.endsWith("SNAPSHOT") ? "VinaysDevOpsLab-SNAPSHOT" : "VinaysDevOpsLab-RELEASE"
 
-                nexusArtifactUploader artifacts:
+                nexusArtifactUploader artifacts: 
                 [[artifactId: "${ArtifactId}", 
                 classifier: '', 
-                file: 'target/VinayDevOpsLab-0.0.3-SNAPSHOT.war', 
+                file: "target/${ArtifactId}-${Version}.war", 
                 type: 'war']], 
                 credentialsId: '0a0bc6c8-f184-4d8e-9775-bcda7b4130b6', 
                 groupId: "${GroupId}", 
@@ -49,32 +47,33 @@ pipeline{
                 protocol: 'http', 
                 repository: "${NexusRepo}", 
                 version: "${Version}"
-
-                }
-
+             }
             }
         }
 
         // Stage 4 : Print some information
         stage ('Print Environment variables'){
-            steps {
-                echo "Artifact Id is '${ArtifactId}'"
-                echo "Version is '${Version}'"
-                echo "GroupId is '${GroupId}'"
-                echo "Name is '${Name}'"
+                    steps {
+                        echo "Artifact ID is '${ArtifactId}'"
+                        echo "Version is '${Version}'"
+                        echo "GroupID is '${GroupId}'"
+                        echo "Name is '${Name}'"
+                    }
+                }
 
-            }
-        }
-
-        // Stage 5 : Deploying
+       
+         // Stage 5 : Deploying
         stage ('Deploy'){
             steps {
                 echo 'Deployinging......'
 
             }
         }
-        
-        
+   
+
+
+
+
     }
 
 }
